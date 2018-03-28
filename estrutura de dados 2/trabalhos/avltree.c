@@ -48,7 +48,7 @@ void inicia(TpArvore *arvore){
 
 int main(){
     TpArvore *arvore;
-
+    
     inicia(arvore);
     menu(arvore);
 }
