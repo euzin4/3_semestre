@@ -12,56 +12,171 @@ typedef struct _nodo{
 typedef struct _arvore{
     TpNodo *raiz;
     TpNodo *nodo;
+    TpNodo *naux;
 } TpArvore;
 
 void inserir(TpArvore *arvore){
     int valor;
 
-    system("clear");
+    system("cls");
     printf("valor: ");
     scanf("%d",&valor);
     if(arvore->nodo->chave == -1){
+        system("cls");
         arvore->nodo->chave = valor;
     }else{
         while(arvore->nodo->chave != -1){
             if(valor > arvore->nodo->chave){
+                system("cls");
                 arvore->nodo = arvore->nodo->dir;
             }
             else if(valor < arvore->nodo->chave){
+                system("cls");
                 arvore->nodo = arvore->nodo->esq;
+            }
+            else if(valor == arvore->nodo->chave){
+                system("cls");
+                printf("Numero ja inserido!\n\n");
+                break;
             }
         }
         arvore->nodo->chave = valor;
         if(arvore->nodo->esq == NULL && arvore->nodo->dir == NULL){
-            //--------------------------- inicia o nodo esquerdo
+            //--------------------------- inicia o nodo sentinela esquerdo
             arvore->nodo->esq = (TpNodo*)malloc(sizeof(TpNodo));
             arvore->nodo->esq->pai = arvore->nodo;
             arvore->nodo->esq->altdireita = 0;
             arvore->nodo->esq->altesquerda = 0;
-            arvore->nodo->esq->altura = 0;  //arrumar as de cima
-            arvore->nodo->esq->nivel = arvore->nodo->nivel++;
+            arvore->nodo->esq->altura = 0;
+            arvore->nodo->esq->nivel = arvore->nodo->nivel+1;
             arvore->nodo->esq->esq = NULL;
             arvore->nodo->esq->dir = NULL;
             arvore->nodo->esq->chave = -1;
-            //--------------------------- inicia o nodo direito
+            //--------------------------- inicia o nodo sentinela direito
             arvore->nodo->dir = (TpNodo*)malloc(sizeof(TpNodo));
             arvore->nodo->dir->pai = arvore->nodo;
             arvore->nodo->dir->altdireita = 0;
             arvore->nodo->dir->altesquerda = 0;
-            arvore->nodo->dir->altura = 0;  //arrumar as de cima
-            arvore->nodo->dir->nivel = arvore->nodo->nivel++;
+            arvore->nodo->dir->altura = 0;
+            arvore->nodo->dir->nivel = arvore->nodo->nivel+1;
             arvore->nodo->dir->esq = NULL;
             arvore->nodo->dir->dir = NULL;
             arvore->nodo->dir->chave = -1;
+            arvore->naux = arvore->nodo;
+            altura(arvore); //arruma a altura da arvore
+            balancear(arvore);
         }
     }
     arvore->nodo = arvore->raiz;
     menu(arvore);
 }
+void altura(TpArvore *arvore){
+    while(arvore->nodo->pai != NULL){
+        if(arvore->nodo->esq->altura >= arvore->nodo->dir->altura){
+            arvore->nodo->altura = arvore->nodo->esq->altura+1;
+        }else if(arvore->nodo->esq->altura < arvore->nodo->dir->altura){
+            arvore->nodo->altura = arvore->nodo->dir->altura+1;
+        }
+        arvore->nodo->altesquerda = arvore->nodo->esq->altura;
+        arvore->nodo->altdireita = arvore->nodo->dir->altura;
+        arvore->nodo = arvore->nodo->pai;
+        if(arvore->nodo == arvore->raiz){
+            if(arvore->nodo->esq->altura >= arvore->nodo->dir->altura){
+                arvore->nodo->altura = arvore->nodo->esq->altura+1;
+            }else if(arvore->nodo->esq->altura < arvore->nodo->dir->altura){
+                arvore->nodo->altura = arvore->nodo->dir->altura+1;
+            }
+        }
+    }
+}
+void balancear(TpArvore *arvore){
+    while(arvore->naux->pai != NULL){
+        //left right
+        if(arvore->naux->pai->esq->chave == -1 && arvore->naux->pai->pai->dir->chave == -1){
+            arvore->naux->pai->dir = arvore->naux->esq;
+            arvore->naux->esq->pai = arvore->naux->pai;
+            arvore->naux->esq = arvore->naux->pai;
+            arvore->naux->pai->pai->esq = arvore->naux;
+            arvore->naux->pai = arvore->naux->pai->pai;
+            arvore->naux->esq->pai = arvore->naux;
+            //left left
+            if(arvore->naux->pai->pai != NULL && arvore->naux->pai->pai->esq->chave == arvore->naux->pai->chave){
+                arvore->naux->pai->pai->esq = arvore->naux;
+            }else if(arvore->naux->pai->pai != NULL && arvore->naux->pai->pai->dir->chave == arvore->naux->pai->chave){
+                arvore->naux->pai->pai->dir = arvore->naux;
+            }
+            arvore->naux->dir->pai = arvore->naux->pai;
+            arvore->naux->pai->esq = arvore->naux->dir;
+            arvore->naux->dir = arvore->naux->pai;
+            if(arvore->naux->pai == arvore->raiz){
+                arvore->raiz = arvore->naux;
+            }
+            if(arvore->naux->pai->pai == NULL){
+                arvore->naux->pai = NULL;
+            }else{
+                arvore->naux->pai = arvore->naux->pai->pai;
+            }
+            arvore->naux->dir->pai = arvore->naux;
+        }
+        //left left
+        if(arvore->naux->pai->dir->chave == -1 && arvore->naux->pai->pai != NULL && arvore->naux->pai->pai->dir->chave == -1){
+            arvore->naux = arvore->naux->pai;
+            if(arvore->naux->pai->pai != NULL && arvore->naux->pai->pai->esq->chave == arvore->naux->pai->chave){
+                arvore->naux->pai->pai->esq = arvore->naux;
+            }else if(arvore->naux->pai->pai != NULL && arvore->naux->pai->pai->dir->chave == arvore->naux->pai->chave){
+                arvore->naux->pai->pai->dir = arvore->naux;
+            }
+            arvore->naux->dir->pai = arvore->naux->pai;
+            arvore->naux->pai->esq = arvore->naux->dir;
+            arvore->naux->dir = arvore->naux->pai;
+            if(arvore->naux->pai == arvore->raiz){
+                arvore->raiz = arvore->naux;
+            }
+            if(arvore->naux->pai->pai == NULL){
+                arvore->naux->pai = NULL;
+            }else{
+                arvore->naux->pai = arvore->naux->pai->pai;
+            }
+            arvore->naux->dir->pai = arvore->naux;
+        }//----
+        //right left
+        if(arvore->naux->pai->dir->chave == -1 && arvore->naux->pai->pai->esq->chave == -1){
+            arvore->naux->pai->esq = arvore->naux->dir;
+            arvore->naux->dir->pai = arvore->naux->pai;
+            arvore->naux->dir = arvore->naux->pai;
+            arvore->naux->pai->pai->dir = arvore->naux;
+            arvore->naux->pai = arvore->naux->pai->pai;
+            arvore->naux->dir->pai = arvore->naux;
+            //right right
+            if(arvore->naux->pai->pai != NULL && arvore->naux->pai->pai->esq->chave == arvore->naux->pai->chave){
+                arvore->naux->pai->pai->esq = arvore->naux;
+            }else if(arvore->naux->pai->pai != NULL && arvore->naux->pai->pai->dir->chave == arvore->naux->pai->chave){
+                arvore->naux->pai->pai->dir = arvore->naux;
+            }
+            arvore->naux->dir->pai = arvore->naux->pai;
+            arvore->naux->pai->esq = arvore->naux->dir;
+            arvore->naux->dir = arvore->naux->pai;
+            if(arvore->naux->pai == arvore->raiz){
+                arvore->raiz = arvore->naux;
+            }
+            if(arvore->naux->pai->pai == NULL){
+                arvore->naux->pai = NULL;
+            }else{
+                arvore->naux->pai = arvore->naux->pai->pai;
+            }
+            arvore->naux->dir->pai = arvore->naux;
+        }
+        if(arvore->naux->pai != NULL){
+            arvore->naux = arvore->naux->pai;
+        }
+        /*if(arvore->naux == arvore->raiz){   //caso o nodo for a raiz
+            printf("algo");
+        }*/
+    }
+}
 void menu(TpArvore *arvore){
     int opc;
 
-    system("clear");
     printf("1-inserir um elemento\n2-listar os elementos inseridos\n0-sair\n");
     scanf("%d",&opc);
     switch(opc){
@@ -75,7 +190,7 @@ void menu(TpArvore *arvore){
         printf("\nAte logo!");
         break;
     default:
-        system("clear");
+        system("cls");
         printf("Opcao invalida!\n\n");
         aux(arvore);
     }
