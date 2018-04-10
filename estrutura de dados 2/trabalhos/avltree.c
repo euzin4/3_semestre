@@ -15,12 +15,37 @@ typedef struct _arvore{
     TpNodo *naux;
 } TpArvore;
 
+void listar(TpArvore *arvore){  //terminar
+    TpNodo *aux;
+
+    aux = arvore->raiz;
+    exibir_pre(arvore, aux);
+    printf("\n\n");
+    menu(arvore);
+}
+void exibir_pre(TpArvore *arvore, TpNodo *aux){
+    if(arvore->raiz->chave == -1){
+        printf("Arvore vazia!");
+        return;
+    }
+    if(aux->chave != -1){
+        printf("%d(%d) ", aux->chave, aux->altura);
+        exibir_pre(arvore, aux->esq);
+        exibir_pre(arvore, aux->dir);
+    }
+}
 void inserir(TpArvore *arvore){
-    int valor;
+    int valor=-1;
 
     system("cls");
-    printf("valor: ");
-    scanf("%d",&valor);
+    while(valor < 0){
+        printf("valor: ");
+        scanf("%d",&valor);
+        if(valor < 0){
+            system("cls");
+            printf("digite um valor maior que zero!\n\n");
+        }
+    }
     if(arvore->nodo->chave == -1){
         system("cls");
         arvore->nodo->chave = valor;
@@ -80,14 +105,17 @@ void altura(TpArvore *arvore){
         arvore->nodo->altesquerda = arvore->nodo->esq->altura;
         arvore->nodo->altdireita = arvore->nodo->dir->altura;
         arvore->nodo = arvore->nodo->pai;
-        if(arvore->nodo == arvore->raiz){
-            if(arvore->nodo->esq->altura >= arvore->nodo->dir->altura){
-                arvore->nodo->altura = arvore->nodo->esq->altura+1;
-            }else if(arvore->nodo->esq->altura < arvore->nodo->dir->altura){
-                arvore->nodo->altura = arvore->nodo->dir->altura+1;
-            }
-        }
     }
+    if(arvore->nodo == arvore->raiz){
+        if(arvore->nodo->esq->altura >= arvore->nodo->dir->altura){
+            arvore->nodo->altura = arvore->nodo->esq->altura+1;
+        }else if(arvore->nodo->esq->altura < arvore->nodo->dir->altura){
+            arvore->nodo->altura = arvore->nodo->dir->altura+1;
+        }
+        arvore->nodo->altesquerda = arvore->nodo->esq->altura;
+        arvore->nodo->altdireita = arvore->nodo->dir->altura;
+    }
+
 }
 void balancear(TpArvore *arvore){
     while(arvore->naux->pai != NULL){
@@ -202,19 +230,24 @@ void balancear(TpArvore *arvore){
         if(arvore->naux->pai != NULL){
             arvore->naux = arvore->naux->pai;
         }
+        if(arvore->naux == arvore->raiz){
+            arvore->nodo = arvore->naux;
+            altura(arvore);
+        }
     }
 }
 void menu(TpArvore *arvore){
     int opc;
 
-    printf("1-inserir um elemento\n2-listar os elementos inseridos(nao funciona)\n0-sair\n");
+    printf("1-inserir um elemento\n2-listar os elementos inseridos\n0-sair\n");
     scanf("%d",&opc);
     switch(opc){
     case 1:
         inserir(arvore);
         break;
     case 2:
-        //listar(arvore);
+        system("cls");
+        listar(arvore);
         break;
     case 0:
         printf("\nAte logo!");
