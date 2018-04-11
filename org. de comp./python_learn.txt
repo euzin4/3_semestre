@@ -1,2 +1,6 @@
-aprenda python
+python basico
 http://www3.ifrn.edu.br/~jurandy/fdp/doc/aprenda-python/capitulo_03.html
+http://www.devfuria.com.br/python/sintaxe-bas
+
+filas e pilhas
+https://pythonhelp.wordpress.com/2012/09/25/filas-e-pilhas-em-python/
