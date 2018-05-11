@@ -15,20 +15,16 @@ typedef struct _arvore{
 }TpArvore;
 
 void balancear(TpArvore *arvore){
-    int lvl;
-
     arvore->nodo->cor = 0;
     while(arvore->nodo->pai != NULL && arvore->nodo->pai->cor == 0 && arvore->nodo->cor == 0){
         if(arvore->nodo->pai->pai->esq->cor == 0 && arvore->nodo->pai->pai->dir->cor == 0){   //caso 1
             arvore->nodo->pai->pai->cor = 0;
             arvore->nodo->pai->pai->esq->cor = 1;
             arvore->nodo->pai->pai->dir->cor = 1;
-            arvore->nodo->pai->esq->nivel = arvore->nodo->pai->nivel + 1;
-            arvore->nodo->pai->dir->nivel = arvore->nodo->pai->nivel + 1;
             arvore->nodo = arvore->nodo->pai->pai;
         }else if(arvore->nodo->pai->pai != NULL){
             //---caso 2
-            if(arvore->nodo->pai->pai->dir->cor == 1 && arvore->nodo->pai->esq->chave == -1){   //esq-dir
+            if(arvore->nodo->pai->pai->dir->cor == 1 && arvore->nodo->pai->esq->chave == -1 || arvore->nodo->cor == 0 && arvore->nodo->pai->cor == 0 && arvore->nodo->pai->pai->dir->cor == 1 && arvore->nodo->pai->dir == arvore->nodo){   //esq-dir
                 arvore->nodo->pai->pai->esq = arvore->nodo;
                 arvore->nodo->pai->dir = arvore->nodo->esq;
                 arvore->nodo->esq->pai = arvore->nodo->pai;
@@ -36,10 +32,7 @@ void balancear(TpArvore *arvore){
                 arvore->nodo->esq->pai->pai = arvore->nodo;
                 arvore->nodo->esq = arvore->nodo->esq->pai;
                 arvore->nodo = arvore->nodo->esq;
-                lvl = arvore->nodo->nivel;
-                arvore->nodo->nivel = arvore->nodo->pai->nivel;
-                arvore->nodo->pai->nivel = lvl;
-            }else if(arvore->nodo->pai->pai->esq->cor == 1 && arvore->nodo->pai->dir->chave == -1){ //dir-esq
+            }else if(arvore->nodo->pai->pai->esq->cor == 1 && arvore->nodo->pai->dir->chave == -1 || arvore->nodo->cor == 0 && arvore->nodo->pai->cor == 0 && arvore->nodo->pai->pai->esq->cor == 1 && arvore->nodo->pai->esq == arvore->nodo){ //dir-esq
                 arvore->nodo->pai->pai->dir = arvore->nodo;
                 arvore->nodo->pai->esq = arvore->nodo->dir;
                 arvore->nodo->dir->pai = arvore->nodo->pai;
@@ -47,9 +40,6 @@ void balancear(TpArvore *arvore){
                 arvore->nodo->dir->pai->pai = arvore->nodo;
                 arvore->nodo->dir = arvore->nodo->dir->pai;
                 arvore->nodo = arvore->nodo->dir;
-                lvl = arvore->nodo->nivel;
-                arvore->nodo->nivel = arvore->nodo->pai->nivel;
-                arvore->nodo->pai->nivel = lvl;
             }
             //---caso 3
             if(arvore->nodo->pai->pai->dir->cor == 1 && arvore->nodo->pai->dir->chave == -1 || arvore->nodo->pai->pai->dir->cor == 1 && arvore->nodo->pai->cor == 0 && arvore->nodo->cor == 0){   //esq-esq
@@ -68,10 +58,6 @@ void balancear(TpArvore *arvore){
                 arvore->nodo = arvore->nodo->pai;
                 arvore->nodo->cor = 1;
                 arvore->nodo->dir->cor = 0;
-                arvore->nodo->nivel = arvore->nodo->dir->nivel;
-                arvore->nodo->dir->nivel = arvore->nodo->dir->dir->nivel;
-                arvore->nodo->dir->dir->nivel = arvore->nodo->esq->nivel;
-                arvore->nodo->esq->nivel = arvore->nodo->dir->nivel;
                 if(arvore->nodo->pai == NULL){
                     arvore->raiz = arvore->nodo;
                 }
@@ -91,17 +77,36 @@ void balancear(TpArvore *arvore){
                 arvore->nodo = arvore->nodo->pai;
                 arvore->nodo->cor = 1;
                 arvore->nodo->esq->cor = 0;
-                arvore->nodo->nivel = arvore->nodo->esq->nivel;
-                arvore->nodo->esq->nivel = arvore->nodo->esq->esq->nivel;
-                arvore->nodo->esq->esq->nivel = arvore->nodo->dir->nivel;
-                arvore->nodo->dir->nivel = arvore->nodo->esq->nivel;
                 if(arvore->nodo->pai == NULL){
                     arvore->raiz = arvore->nodo;
                 }
             }
+            nivel(arvore);
         }
     }
+    arvore->nodo = arvore->raiz;
     arvore->raiz->cor = 1;
+
+}
+void nivel(TpArvore *arvore){
+    TpNodo *aux1;
+
+    aux1 = arvore->raiz;
+    ajustenvl(arvore, aux1);
+}
+void ajustenvl(TpArvore *arvore, TpNodo *aux1){
+    if(arvore->raiz->chave == -1){
+        printf("Arvore vazia!");
+        return;
+    }else if(aux1 != NULL){
+        if(aux1->pai == NULL){
+            aux1->nivel = 0;
+        }else{
+            aux1->nivel = aux1->pai->nivel +1;
+        }
+        ajustenvl(arvore, aux1->esq);
+        ajustenvl(arvore, aux1->dir);
+    }
 }
 void listar(TpArvore *arvore){
     TpNodo *aux;
