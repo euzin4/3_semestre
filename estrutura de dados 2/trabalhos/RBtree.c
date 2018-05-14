@@ -246,4 +246,6 @@ int main(){
     inicia(arvore);
     arvore->nodo = arvore->raiz;
     menu(arvore);
+
+    return 0;
 }
