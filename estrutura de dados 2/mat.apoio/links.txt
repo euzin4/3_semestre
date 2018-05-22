@@ -1,1 +1,2 @@
-(Manipulação de Arquivos txt em C / Ler Dados)https://www.youtube.com/watch?v=y_euDUgoND8
+(Manipulação de Arquivos txt em C / Ler Dados int)https://www.youtube.com/watch?v=y_euDUgoND8
+(Manipulação de Arquivos txt em C / Ler Dados string)https://www.youtube.com/watch?v=USsUSMpNGsM
