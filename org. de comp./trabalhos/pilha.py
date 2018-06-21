@@ -1,7 +1,4 @@
-#!/usr/bin/python
-# -*- coding: utf-8 -*-
-
-import os
+import os	
 
 class Pilha:
 
@@ -23,7 +20,7 @@ class Pilha:
 	def div(self):
 		return self.pilha.append(self.pilha.pop() / self.pilha.pop())
 
-	def imprimir(self):
+	def mostrar(self):
 		return self.pilha
 
 	def topo(self):
@@ -35,26 +32,18 @@ class Main():
 	
 	while True:
 		os.system('cls' if os.name == 'nt' else 'clear')
-		print("_______________~<>~______________")
-		print("     NOTAÇÃO POLONESA REVERSA\n")
-		print(" [1] - Inserir Valor")
-		print(" [2] - Somar")
-		print(" [3] - Subtrair")
-		print(" [4] - Multiplicar")
-		print(" [5] - Dividir")
-		print(" [0] - Sair")
+		print("\tMENU\n1-Inserir Valor\n2-Somar\n3-Subtrair\n4-Multiplicar\n5-Dividir\n0-Sair\n")
 		
 		if len(a.pilha) > 0: 
 			stack = a.topo()
-			print("\n Pilha:",a.imprimir())
-			print("\n Stack Pointer: %i" %stack)
+			print("\nPilha:",a.mostrar())
+			print("Stack Pointer: %i" %stack)
 
-		print("_______________~<>~______________")
-		op = int(input(" Escolha uma opção: "))
+		op = int(input(""))
 
 		if op == 1:			#inserir
 			if len(a.pilha) < 8:
-				a.adicionar(int(input(" Digite um valor: ")))
+				a.adicionar(int(input("Valor: ")))
 
 		elif op == 2:		#somar
 			if len(a.pilha) > 1:
@@ -73,4 +62,5 @@ class Main():
 				a.div()
 			
 		elif op == 0:		#sair
-break;
+			print("Até logo!")
+			break
