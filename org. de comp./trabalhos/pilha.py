@@ -41,7 +41,7 @@ class Main():
 
 		op = int(input(""))
 
-		if op == 1:			#inserir
+		if op == 1:		#inserir
 			if len(a.pilha) < 8:
 				a.adicionar(int(input("Valor: ")))
 
