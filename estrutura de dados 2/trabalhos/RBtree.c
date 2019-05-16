@@ -176,7 +176,7 @@ void inserir(TpArvore *arvore){
             arvore->nodo->esq->nivel = arvore->nodo->nivel + 1;
             arvore->nodo->esq->cor = 1;
             arvore->nodo->esq->chave = -1;
-            //--------------------------- inicia o nodo sentinela direito
+            //--------------------------- inicia o nodo sentinela direito 
             arvore->nodo->dir = (TpNodo*)malloc(sizeof(TpNodo));
             arvore->nodo->dir->pai = arvore->nodo;
             arvore->nodo->dir->esq = NULL;
